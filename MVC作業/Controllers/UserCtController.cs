@@ -19,7 +19,7 @@ namespace MVC作業.Controllers
         {
             if (namesearch != null && !namesearch.Equals(""))
             {
-                var 客戶聯絡人資料 = db.客戶聯絡人.Where(x=>x.姓名.Equals(namesearch)).ToList();
+                var 客戶聯絡人資料 = db.客戶聯絡人.Where(x=>x.姓名.Equals(namesearch) && x.IsDeleted==false).ToList();
 
                 if (客戶聯絡人資料.Count>0)
                 {
@@ -28,7 +28,7 @@ namespace MVC作業.Controllers
                 else
                 {
                     TempData["回應"] = namesearch;
-                    var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
+                    var 客戶聯絡人 = db.客戶聯絡人.Where(x => x.IsDeleted == false).Include(客 => 客.客戶資料);
                     return View(客戶聯絡人.ToList());
                 }
             }
@@ -112,7 +112,7 @@ namespace MVC作業.Controllers
         {
             if (ModelState.IsValid)
             {
-                var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.Email.Equals(客戶聯絡人.Email)).FirstOrDefault();
+                var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.Email.Equals(客戶聯絡人.Email) && x.IsDeleted==false).FirstOrDefault();
                 if (客戶聯絡人資料 != null)
                 {
                     TempData["回應"] = 客戶聯絡人;
@@ -150,7 +150,8 @@ namespace MVC作業.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            db.客戶聯絡人.Remove(客戶聯絡人);
+            //db.客戶聯絡人.Remove(客戶聯絡人);
+            客戶聯絡人.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }

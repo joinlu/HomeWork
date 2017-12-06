@@ -19,7 +19,7 @@ namespace MVC作業.Controllers
         {
             if (namesearch != null && !namesearch.Equals(""))
             {
-                var 銀行資訊 = db.客戶銀行資訊.Where(x => x.銀行名稱.Equals(namesearch)).ToList();
+                var 銀行資訊 = db.客戶銀行資訊.Where(x => x.銀行名稱.Equals(namesearch) && x.IsDeleted == false).ToList();
 
                 if (銀行資訊.Count > 0)
                 {
@@ -28,14 +28,14 @@ namespace MVC作業.Controllers
                 else
                 {
                     TempData["回應"] = namesearch;
-                    var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
+                    var 客戶銀行資訊 = db.客戶銀行資訊.Where(x => x.IsDeleted == false).Include(客 => 客.客戶資料);
                     return View(客戶銀行資訊.ToList());
                 }
 
             }
             else
             {
-                var 客戶銀行資訊 = db.客戶銀行資訊.Include(客 => 客.客戶資料);
+                var 客戶銀行資訊 = db.客戶銀行資訊.Where(x => x.IsDeleted == false).Include(客 => 客.客戶資料);
                 return View(客戶銀行資訊.ToList());
             }
         }
@@ -134,7 +134,8 @@ namespace MVC作業.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             客戶銀行資訊 客戶銀行資訊 = db.客戶銀行資訊.Find(id);
-            db.客戶銀行資訊.Remove(客戶銀行資訊);
+            //db.客戶銀行資訊.Remove(客戶銀行資訊);
+            客戶銀行資訊.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
         }
