@@ -10,13 +10,14 @@
     <pre> @TempData["回應"].ToString() 不存在!!</pre>
 }
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "UserBank", FormMethod.Get))
 {
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10 text-right">
-            &nbsp;&nbsp;&nbsp;&nbsp;銀行名稱：@Html.TextBox("namesearch")
+            銀行名稱：@Html.TextBox("namesearch")
             <input type="submit" value="查詢" class="btn btn-default" />
-        </div>
+            <input type="button" value="匯出Excel" class="btn btn-default" onclick="location.href='@Url.Action("Export", "UserBank" )'" />
+      </div>
     </div>
 }
 

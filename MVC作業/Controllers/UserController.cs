@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MVC作業.Models;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace MVC作業.Controllers
 {
@@ -19,7 +21,7 @@ namespace MVC作業.Controllers
         {
             if (namesearch != null && !namesearch.Equals(""))
             {
-                var 客戶 = db.客戶資料.Where(x => x.客戶名稱.Equals(namesearch) && x.IsDeleted==false).ToList();
+                var 客戶 = db.客戶資料.Where(x => x.客戶名稱.Equals(namesearch) && x.IsDeleted == false).ToList();
 
                 if (客戶.Count > 0)
                 {
@@ -28,7 +30,7 @@ namespace MVC作業.Controllers
                 else
                 {
                     TempData["回應"] = namesearch;
-                    return View(db.客戶資料.Where(x=>x.IsDeleted == false).ToList());
+                    return View(db.客戶資料.Where(x => x.IsDeleted == false).ToList());
                 }
             }
             else
@@ -132,6 +134,38 @@ namespace MVC作業.Controllers
             客戶資料.IsDeleted = true;
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        //[HttpPost]
+        public FileResult Export()
+        {
+            DataTable dt = new DataTable("Grid");
+            dt.Columns.AddRange(new DataColumn[6] { new DataColumn("客戶名稱"),
+                                                    new DataColumn("統一編號"),
+                                                    new DataColumn("電話"),
+                                                    new DataColumn("傳真"),
+                                                    new DataColumn("地址"),
+                                                    new DataColumn("Email") });
+
+            var customers = from customer in db.客戶資料.Where(x => x.IsDeleted == false)
+                            select customer;
+
+            foreach (var customer in customers)
+            {
+                dt.Rows.Add(customer.客戶名稱, customer.統一編號, customer.電話, customer.傳真, customer.地址, customer.Email);
+            }
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                wb.Worksheet(1).Tables.FirstOrDefault().ShowAutoFilter = false;
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "客戶資料.xlsx");
+                }
+            }
         }
 
         protected override void Dispose(bool disposing)

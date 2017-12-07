@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MVC作業.Models;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace MVC作業.Controllers
 {
@@ -139,6 +141,37 @@ namespace MVC作業.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        public FileResult Export()
+        {
+            DataTable dt = new DataTable("Grid");
+            dt.Columns.AddRange(new DataColumn[5] { new DataColumn("銀行名稱"),
+                                                    new DataColumn("銀行代碼"),
+                                                    new DataColumn("分行代碼"),
+                                                    new DataColumn("帳戶名稱"),
+                                                    new DataColumn("帳戶號碼")});
+
+            var customers = from customer in db.客戶銀行資訊.Where(x => x.IsDeleted == false)
+                            select customer;
+
+            foreach (var customer in customers)
+            {
+                dt.Rows.Add(customer.銀行名稱, customer.銀行代碼, customer.分行代碼, customer.帳戶名稱, customer.帳戶號碼);
+            }
+
+            using (XLWorkbook wb = new XLWorkbook())
+            {
+                wb.Worksheets.Add(dt);
+                wb.Worksheet(1).Tables.FirstOrDefault().ShowAutoFilter = false;
+
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    wb.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "客戶銀行資料.xlsx");
+                }
+            }
+        }
+
 
         protected override void Dispose(bool disposing)
         {
