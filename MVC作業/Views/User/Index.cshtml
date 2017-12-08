@@ -9,6 +9,22 @@
 {
     <pre> @TempData["回應"].ToString() 不存在!!</pre>
 }
+
+@using (Html.BeginForm("SelectC", "User", FormMethod.Get))
+{
+    <div class="col-md-offset-0 col-md-10 text-left">
+        <table>
+            <tr>
+                <td>
+                    客戶分類：
+                </td>
+                <td>
+                    @Html.DropDownList("客戶分類", (SelectList)ViewBag.Values, htmlAttributes: new { @class = "form-control", @onchange = "this.form.submit();" })
+                </td>
+            </tr>
+        </table>
+    </div>
+}
 @using (Html.BeginForm("Index", "User", FormMethod.Get))
 {
     <div class="form-group">
@@ -19,30 +35,39 @@
         </div>
     </div>
 }
-
-
+<br />
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.客戶名稱)
+            @Html.ActionLink("客戶名稱", "DSort", new { 排序 = ViewBag.NameSort })
+            @*@Html.DisplayNameFor(model => model.客戶名稱)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.統一編號)
+            @Html.ActionLink("客戶分類", "DSort", new { 排序 = ViewBag.NameSort })
+            @*@Html.DisplayNameFor(model => model.客戶名稱)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.電話)
+            @Html.ActionLink("統一編號", "DSort", new { 排序 = ViewBag.NumlSort })
+            @*@Html.DisplayNameFor(model => model.統一編號)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.傳真)
+            @Html.ActionLink("電話", "DSort", new { 排序 = ViewBag.TelSort })
+            @*@Html.DisplayNameFor(model => model.電話)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.地址)
+            @Html.ActionLink("傳真", "DSort", new { 排序 = ViewBag.FaxSort })
+            @*@Html.DisplayNameFor(model => model.傳真)*@
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.ActionLink("地址", "DSort", new { 排序 = ViewBag.AddSort })
+            @*@Html.DisplayNameFor(model => model.地址)*@
+        </th>
+        <th>
+            @Html.ActionLink("Email", "DSort", new { 排序 = ViewBag.EmailSort })
+            @*     @Html.DisplayNameFor(model => model.Email)*@
         </th>
         <th></th>
     </tr>
@@ -52,6 +77,9 @@
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.客戶名稱)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.客戶分類)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.統一編號)

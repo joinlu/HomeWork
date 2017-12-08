@@ -33,7 +33,7 @@
                         <td>
                             @*@Html.DisplayNameFor(model => model.職稱)*@
                             @Html.ActionLink("職稱", "DSort", new { 排序 = ViewBag.JobSort })
-       </td>
+                        </td>
                         <td>
                             @Html.DropDownList("職稱", (SelectList)ViewBag.Values, htmlAttributes: new { @class = "form-control", @onchange = "this.form.submit();" })
                         </td>
@@ -43,24 +43,24 @@
         </th>
         <th>
             @*@Html.DisplayNameFor(model => model.姓名)*@
-            @Html.ActionLink("姓名", "DSort",new {排序=ViewBag.NameSort })
+            @Html.ActionLink("姓名", "DSort", new { 排序 = ViewBag.NameSort })
         </th>
         <th>
-    @*        @Html.DisplayNameFor(model => model.Email)*@
+            @*        @Html.DisplayNameFor(model => model.Email)*@
             @Html.ActionLink("Email", "DSort", new { 排序 = ViewBag.EmailSort })
         </th>
         <th>
             @Html.ActionLink("手機", "DSort", new { 排序 = ViewBag.PhoneSort })
-       @*   @Html.DisplayNameFor(model => model.手機)*@
+            @*   @Html.DisplayNameFor(model => model.手機)*@
         </th>
         <th>
             @*@Html.DisplayNameFor(model => model.電話)*@
             @Html.ActionLink("電話", "DSort", new { 排序 = ViewBag.TelSort })
-       </th>
+        </th>
         <th>
             @*@Html.DisplayNameFor(model => model.客戶資料.客戶名稱)*@
             @Html.ActionLink("客戶名稱", "DSort", new { 排序 = ViewBag.UserSort })
-       </th>
+        </th>
         <th></th>
     </tr>
 
