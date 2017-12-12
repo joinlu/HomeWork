@@ -14,25 +14,19 @@ namespace MVC作業.Controllers
 {
     public class UserCtController : Controller
     {
-        private 客戶資料Entities db = new 客戶資料Entities();
+        //private 客戶資料Entities db = new 客戶資料Entities();
+
+        客戶聯絡人Repository rep客戶聯絡人 = RepositoryHelper.Get客戶聯絡人Repository();
+        客戶資料Repository rep客戶資料 = RepositoryHelper.Get客戶資料Repository();
 
         // GET: UserCt
         public ActionResult Index(string namesearch)
         {
-            List<String> item職稱 = new List<string>();
-            item職稱.Add("全部職稱");
-            var 職稱清單 = (from data in db.客戶聯絡人
-                        where data.IsDeleted == false
-                        select data.職稱);
-            foreach (var item in 職稱清單.Distinct().ToList())
-            {
-                item職稱.Add(item.ToString());
-            }
-            ViewBag.職稱 = new SelectList(item職稱);
+            ViewBag.職稱 = new SelectList(rep客戶聯絡人.fn職稱清單());
 
             if (namesearch != null && !namesearch.Equals(""))
             {
-                var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.姓名.Equals(namesearch) && x.IsDeleted == false).ToList();
+                var 客戶聯絡人資料 =rep客戶聯絡人.fn客戶名稱搜尋(namesearch).ToList();
 
                 if (客戶聯絡人資料.Count > 0)
                 {
@@ -41,63 +35,39 @@ namespace MVC作業.Controllers
                 else
                 {
                     TempData["回應"] = namesearch;
-                    var 客戶聯絡人 = db.客戶聯絡人.Where(x => x.IsDeleted == false).Include(客 => 客.客戶資料);
-                    return View(客戶聯絡人.ToList());
+                    return View(rep客戶聯絡人.fn取得所有資料());
                 }
             }
             else
             {
-                var 客戶聯絡人 = db.客戶聯絡人.Include(客 => 客.客戶資料);
-                return View(客戶聯絡人.ToList());
+                return View(rep客戶聯絡人.fn取得所有資料());
             }
         }
 
         public ActionResult SelectC(string 職稱)
         {
-            List<String> item職稱 = new List<string>();
-            item職稱.Add("全部職稱");
-            var 職稱清單 = (from data in db.客戶聯絡人
-                        where data.IsDeleted == false
-                        select data.職稱);
-            foreach (var item in 職稱清單.Distinct().ToList())
-            {
-                item職稱.Add(item.ToString());
-            }
-            ViewBag.職稱 = new SelectList(item職稱);
+            ViewBag.職稱 = new SelectList(rep客戶聯絡人.fn職稱清單());
 
             if (職稱 != null && !職稱.Equals(""))
             {
                 if (職稱.Equals("全部職稱"))
                 {
-                    var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.IsDeleted == false).ToList();
-                    return View("Index",客戶聯絡人資料);
+                    return View("Index", rep客戶聯絡人.fn取得所有資料());
                 }
                 else
                 {
-                    var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.職稱.Equals(職稱) && x.IsDeleted == false).ToList();
-                    return View("Index", 客戶聯絡人資料);
+                   return View("Index",rep客戶聯絡人.fn客戶篩選資料(職稱));
                 }
             }
             else
             {
-                var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.IsDeleted == false).ToList();
-                return View("Index", 客戶聯絡人資料);
+                return View("Index", rep客戶聯絡人.fn取得所有資料());
             }
         }
 
         public ActionResult DSort(string 排序)
         {
-            List<String> item職稱 = new List<string>();
-            item職稱.Add("全部職稱");
-            var 職稱清單 = (from data in db.客戶聯絡人
-                        where data.IsDeleted == false
-                        select data.職稱);
-            foreach (var item in 職稱清單.Distinct().ToList())
-            {
-                item職稱.Add(item.ToString());
-            }
-            ViewBag.職稱 = new SelectList(item職稱);
-
+            ViewBag.職稱 = new SelectList(rep客戶聯絡人.fn職稱清單());
 
             ViewBag.NameSort = String.IsNullOrEmpty(排序) ? "Name desc" : "";
             ViewBag.EmailSort = 排序 == "Email" ? "Email desc" : "Email";
@@ -106,53 +76,7 @@ namespace MVC作業.Controllers
             ViewBag.UserSort = 排序 == "User" ? "User desc" : "User";
             ViewBag.JobSort = 排序 == "Job" ? "Job desc" : "Job";
 
-            var 客戶聯絡人 = db.客戶聯絡人.Where(x => x.IsDeleted == false).Include(客 => 客.客戶資料);
-            switch (排序)
-            {
-                case "Name desc":
-                    客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.姓名);
-                    break;
-                case "Name":
-                    客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.姓名);
-                    break;
-                case "Email desc":
-                    客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.Email);
-                    break;
-                case "Email":
-                    客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.Email);
-                    break;
-                case "Phone desc":
-                    客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.手機);
-                    break;
-                case "Phone":
-                    客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.手機);
-                    break;
-                case "Tel desc":
-                    客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.電話);
-                    break;
-                case "Tel":
-                    客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.電話);
-                    break;
-                case "User desc":
-                    客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.客戶Id);
-                    break;
-                case "User":
-                    客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.客戶Id);
-                    break;
-                case "Job desc":
-                    客戶聯絡人 = 客戶聯絡人.OrderByDescending(s => s.職稱);
-                    break;
-                case "Job":
-                    客戶聯絡人 = 客戶聯絡人.OrderBy(s => s.職稱);
-                    break;
-
-                default:
-                    break;
-            }
-
-
-            return View("Index",客戶聯絡人.ToList());
-
+            return View("Index", rep客戶聯絡人.fn重新排序(排序).ToList());
         }
 
         // GET: UserCt/Details/5
@@ -162,7 +86,8 @@ namespace MVC作業.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            //客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            var 客戶聯絡人 = rep客戶聯絡人.fn單筆搜尋((int)id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -173,7 +98,8 @@ namespace MVC作業.Controllers
         // GET: UserCt/Create
         public ActionResult Create()
         {
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱");
+            
+            ViewBag.客戶Id = new SelectList(rep客戶資料.fn取得所有資料(), "Id", "客戶名稱");
             return View();
         }
 
@@ -186,20 +112,20 @@ namespace MVC作業.Controllers
         {
             if (ModelState.IsValid)
             {
-                var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.Email.Equals(客戶聯絡人.Email)).FirstOrDefault();
+                var 客戶聯絡人資料 = rep客戶聯絡人.fnEail是否已存在(客戶聯絡人.Email);
                 if (客戶聯絡人資料 != null)
                 {
                     TempData["回應"] = 客戶聯絡人;
                 }
                 else
                 {
-                    db.客戶聯絡人.Add(客戶聯絡人);
-                    db.SaveChanges();
+                    rep客戶聯絡人.Add(客戶聯絡人);
+                    rep客戶聯絡人.UnitOfWork.Commit();
                     return RedirectToAction("Index");
                 }
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(rep客戶資料.fn取得所有資料(), "Id", "客戶名稱");
             return View(客戶聯絡人);
         }
 
@@ -210,12 +136,12 @@ namespace MVC作業.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            var 客戶聯絡人 = rep客戶聯絡人.fn單筆搜尋((int)id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(rep客戶資料.fn取得所有資料(), "Id", "客戶名稱", 客戶聯絡人.客戶Id);
             return View(客戶聯絡人);
         }
 
@@ -228,20 +154,20 @@ namespace MVC作業.Controllers
         {
             if (ModelState.IsValid)
             {
-                //var 客戶聯絡人資料 = db.客戶聯絡人.Where(x => x.Email.Equals(客戶聯絡人.Email) && x.IsDeleted==false).FirstOrDefault();
-                //if (客戶聯絡人資料 != null)
-                //{
-                //    TempData["回應"] = 客戶聯絡人;
-                //}
-                //else
-                //{
-                db.Entry(客戶聯絡人).State = EntityState.Modified;
-                db.SaveChanges();
+                var 客戶 = rep客戶聯絡人.fn單筆搜尋(客戶聯絡人.Id);
+
+                客戶.職稱 = 客戶聯絡人.職稱;
+                客戶.姓名 = 客戶聯絡人.姓名;
+                客戶.Email = 客戶聯絡人.Email;
+                客戶.手機 = 客戶聯絡人.手機;
+                客戶.電話 = 客戶聯絡人.電話;
+                客戶.客戶Id = 客戶聯絡人.客戶Id;
+
+                rep客戶聯絡人.UnitOfWork.Commit();
                 return RedirectToAction("Index");
-                //}
             }
 
-            ViewBag.客戶Id = new SelectList(db.客戶資料, "Id", "客戶名稱", 客戶聯絡人.客戶Id);
+            ViewBag.客戶Id = new SelectList(rep客戶資料.fn取得所有資料(), "Id", "客戶名稱");
             return View(客戶聯絡人);
         }
 
@@ -252,7 +178,7 @@ namespace MVC作業.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
+            var 客戶聯絡人 = rep客戶聯絡人.fn單筆搜尋((int)id);
             if (客戶聯絡人 == null)
             {
                 return HttpNotFound();
@@ -265,10 +191,12 @@ namespace MVC作業.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            客戶聯絡人 客戶聯絡人 = db.客戶聯絡人.Find(id);
-            //db.客戶聯絡人.Remove(客戶聯絡人);
+            var 客戶聯絡人 = rep客戶聯絡人.fn單筆搜尋((int)id);
+
             客戶聯絡人.IsDeleted = true;
-            db.SaveChanges();
+
+            rep客戶聯絡人.UnitOfWork.Commit();
+
             return RedirectToAction("Index");
         }
 
@@ -281,8 +209,7 @@ namespace MVC作業.Controllers
                                                     new DataColumn("手機"),
                                                     new DataColumn("電話")});
 
-            var customers = from customer in db.客戶聯絡人.Where(x => x.IsDeleted == false)
-                            select customer;
+            var customers = rep客戶聯絡人.fn取得所有資料();
 
             foreach (var customer in customers)
             {
@@ -306,7 +233,7 @@ namespace MVC作業.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                //db.Dispose();
             }
             base.Dispose(disposing);
         }

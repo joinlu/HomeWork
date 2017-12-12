@@ -28,17 +28,9 @@
         <th>
             @using (Html.BeginForm("SelectC", "UserCt", FormMethod.Get))
             {
-                <table>
-                    <tr>
-                        <td>
-                            @*@Html.DisplayNameFor(model => model.職稱)*@
-                            @Html.ActionLink("職稱", "DSort", new { 排序 = ViewBag.JobSort })
-                        </td>
-                        <td>
-                            @Html.DropDownList("職稱", (SelectList)ViewBag.Values, htmlAttributes: new { @class = "form-control", @onchange = "this.form.submit();" })
-                        </td>
-                    </tr>
-                </table>
+                @*@Html.DisplayNameFor(model => model.職稱)*@
+                @Html.ActionLink("職稱", "DSort", new { 排序 = ViewBag.JobSort })
+                @Html.DropDownList("職稱", (SelectList)ViewBag.Values, htmlAttributes: new { @class = "form-control", @onchange = "this.form.submit();" })
             }
         </th>
         <th>
