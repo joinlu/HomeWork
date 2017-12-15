@@ -29,5 +29,7 @@ namespace MVC作業.Models
         public virtual DbSet<客戶銀行資訊> 客戶銀行資訊 { get; set; }
         public virtual DbSet<客戶聯絡人> 客戶聯絡人 { get; set; }
         public virtual DbSet<UserListView> UserListView { get; set; }
+
+        public System.Data.Entity.DbSet<MVC作業.Models.客戶聯絡人MetaData> 客戶聯絡人MetaData { get; set; }
     }
 }

@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>TestJs</h2>
+
+<div class="text-right">
+    <button id="getData" class="btn btn-default">載入資料</button>
+</div>
+<p></p>
+<table class="table table-striped table-hover table-bordered">
+    <thead>
+        <tr>
+            <th class="center">客戶名稱</th>
+            <th class="center">客戶分類</th>
+            <th class="center">統一編號</th>
+            <th class="center">電話</th>
+            <th class="center">傳真</th>
+            <th class="center">地址</th>
+            <th class="center">Email</th>
+        </tr>
+    </thead>
+    <tbody id="contacts"></tbody>
+</table>
+
+<script>
+    function GetContact() {
+        $.ajax({
+            url: 'Js/TestJs',
+            type: "POST",
+            dataType: "json",
+            success: SetValue
+        })
+    };
+    function SetValue(data) {
+        //alert(data);
+        var row = "";
+        var i = 0;
+        $.each(data, function () {
+            row += "<tr>" +
+                "<td>" + data[i].客戶名稱 + "</td>" +
+                "<td>" + data[i].客戶分類 + "</td>" +
+                "<td>" + data[i].統一編號 + "</td>" +
+                "<td>" + data[i].電話 + "</td>" +
+                "<td>" + data[i].傳真 + "</td>" +
+                "<td>" + data[i].地址 + "</td>" +
+                "<td>" + data[i].Email + "</td>" +
+                "</tr>";
+            i++;
+        });
+        $("#contacts").html(row);
+    }
+    $('#getData').click(function () {
+        GetContact();
+    });
+</script>

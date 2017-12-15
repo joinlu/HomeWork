@@ -164,8 +164,6 @@ namespace MVC作業.Controllers
                                                     new DataColumn("帳戶名稱"),
                                                     new DataColumn("帳戶號碼")});
 
-            //var customers = from customer in db.客戶銀行資訊.Where(x => x.IsDeleted == false)
-            //                select customer;
             var customers = rep客戶銀行資訊.fn取得所有資料();
 
             foreach (var customer in customers)
